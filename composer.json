@@ -1,0 +1,19 @@
+{
+  "name": "ganlvtech/php-enphp-decoder",
+  "license": "GPL-3.0",
+  "authors": [
+    {
+      "name": "Ganlv",
+      "email": "ganlvtech@qq.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Ganlv\\EnphpDecoder\\": "src"
+    }
+  },
+  "require": {
+    "ext-zlib": "*",
+    "nikic/php-parser": "^4.2"
+  }
+}
