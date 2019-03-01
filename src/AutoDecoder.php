@@ -2,7 +2,7 @@
 /**
  * EnPHP Decoder
  *
- * https://github.com/ganlvtech/php-enphp-decompiler
+ * https://github.com/ganlvtech/php-enphp-decoder
  *
  * Copyright (C) 2019  Ganlv
  *

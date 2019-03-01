@@ -3,8 +3,8 @@
 ## Installation & Usage
 
 ```bash
-git clone https://github.com/ganlvtech/php-enphp-decompiler.git
-cd php-enphp-decompiler
+git clone https://github.com/ganlvtech/php-enphp-decoder.git
+cd php-enphp-decoder
 composer install
 php bin/decode.php tests/assets/admin.php output.php
 ```
