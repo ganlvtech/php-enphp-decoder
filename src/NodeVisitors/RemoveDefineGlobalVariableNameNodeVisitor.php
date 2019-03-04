@@ -8,11 +8,11 @@ use PhpParser\NodeVisitorAbstract;
 
 class RemoveDefineGlobalVariableNameNodeVisitor extends NodeVisitorAbstract
 {
-    public $globalVarName;
+    public $globalVarKey;
 
-    public function __construct($globalVarName)
+    public function __construct($globalVarKey)
     {
-        $this->globalVarName = $globalVarName;
+        $this->globalVarKey = $globalVarKey;
     }
 
     public function leaveNode(Node $node)
@@ -25,7 +25,7 @@ class RemoveDefineGlobalVariableNameNodeVisitor extends NodeVisitorAbstract
             && count($node->expr->args) === 2
             && $node->expr->args[0] instanceof \PhpParser\Node\Arg
             && $node->expr->args[0]->value instanceof \PhpParser\Node\Scalar\String_
-            && $node->expr->args[0]->value->value === $this->globalVarName
+            && $node->expr->args[0]->value->value === $this->globalVarKey
             && $node->expr->args[0]->byRef === false
             && $node->expr->args[0]->unpack === false
             && $node->expr->args[1] instanceof \PhpParser\Node\Arg

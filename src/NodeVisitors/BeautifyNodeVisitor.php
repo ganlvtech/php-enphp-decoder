@@ -14,7 +14,6 @@ class BeautifyNodeVisitor extends NodeVisitorAbstract
                 || $node instanceof Node\Expr\MethodCall)
             && $node->name instanceof Node\Scalar\String_) {
             $node->name = new Node\Name($node->name->value);
-
         } elseif ($node instanceof Node\Expr\New_
             && $node->class instanceof Node\Scalar\String_) {
             $node->class = new Node\Name($node->class->value);

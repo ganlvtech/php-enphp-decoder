@@ -39,6 +39,7 @@ class AutoDecoder
 {
     protected $ast;
     protected $globalVarName;
+    protected $globalVarKey;
     protected $delimiter;
     protected $data;
     protected $start;
@@ -64,6 +65,7 @@ class AutoDecoder
         $traverser->addVisitor($nodeVisitor);
         $this->ast = $traverser->traverse($this->ast);
         $this->globalVarName = $nodeVisitor->globalVarName;
+        $this->globalVarKey = $nodeVisitor->globalVarKey;
         $this->delimiter = $nodeVisitor->delimiter;
         $this->data = $nodeVisitor->data;
         $this->start = $nodeVisitor->start;
@@ -73,7 +75,7 @@ class AutoDecoder
 
     public function removeDefineGlobalVariableName()
     {
-        $nodeVisitor = new RemoveDefineGlobalVariableNameNodeVisitor($this->globalVarName);
+        $nodeVisitor = new RemoveDefineGlobalVariableNameNodeVisitor($this->globalVarKey);
         $traverser = new NodeTraverser();
         $traverser->addVisitor($nodeVisitor);
         $this->ast = $traverser->traverse($this->ast);
@@ -92,7 +94,7 @@ class AutoDecoder
 
     public function replaceGlobalString()
     {
-        $nodeVisitor = new GlobalStringNodeVisitor($this->globalVarName, $this->stringArray);
+        $nodeVisitor = new GlobalStringNodeVisitor($this->globalVarName, $this->globalVarKey, $this->stringArray);
         $traverser = new NodeTraverser();
         $traverser->addVisitor($nodeVisitor);
         $this->ast = $traverser->traverse($this->ast);
@@ -102,10 +104,11 @@ class AutoDecoder
     public function replaceFunctionLikeGlobalString()
     {
         $globalVarName = $this->globalVarName;
+        $globalVarKey = $this->globalVarKey;
         $stringArray = $this->stringArray;
-        $nodeVisitor = new FunctionLikeNodeVisitor(function ($node) use ($globalVarName, $stringArray) {
+        $nodeVisitor = new FunctionLikeNodeVisitor(function ($node) use ($globalVarName, $globalVarKey, $stringArray) {
             /** @var $node \PhpParser\Node\Stmt\Function_ */
-            $nodeVisitor = new FunctionGlobalStringNodeVisitor($globalVarName, $stringArray);
+            $nodeVisitor = new FunctionGlobalStringNodeVisitor($globalVarName, $globalVarKey, $stringArray);
             $traverser = new NodeTraverser();
             $traverser->addVisitor($nodeVisitor);
             $node->stmts = $traverser->traverse($node->stmts);

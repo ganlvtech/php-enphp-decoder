@@ -9,6 +9,7 @@ use PhpParser\NodeVisitorAbstract;
 class FindAndRemoveGlobalVariableNameNodeVisitor extends NodeVisitorAbstract
 {
     public $globalVarName;
+    public $globalVarKey;
     public $delimiter;
     public $data;
     public $start;
@@ -20,7 +21,6 @@ class FindAndRemoveGlobalVariableNameNodeVisitor extends NodeVisitorAbstract
             && $node->expr instanceof \PhpParser\Node\Expr\Assign
             && $node->expr->var instanceof \PhpParser\Node\Expr\ArrayDimFetch
             && $node->expr->var->var instanceof \PhpParser\Node\Expr\Variable
-            && $node->expr->var->var->name === 'GLOBALS'
             && $node->expr->var->dim instanceof \PhpParser\Node\Expr\ConstFetch
             && $node->expr->var->dim->name instanceof \PhpParser\Node\Name
             && count($node->expr->var->dim->name->parts) === 1
@@ -63,7 +63,8 @@ class FindAndRemoveGlobalVariableNameNodeVisitor extends NodeVisitorAbstract
             && $node->expr->expr->args[1]->byRef === false
             && $node->expr->expr->args[1]->unpack === false
         ) {
-            $this->globalVarName = $node->expr->var->dim->name->parts[0];
+            $this->globalVarName = $node->expr->var->var->name;
+            $this->globalVarKey = $node->expr->var->dim->name->parts[0];
             $this->delimiter = $node->expr->expr->args[0]->value->value;
             $this->data = $node->expr->expr->args[1]->value->args[0]->value->args[0]->value->value;
             $this->start = $node->expr->expr->args[1]->value->args[0]->value->args[1]->value->value;
