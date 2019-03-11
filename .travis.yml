@@ -6,6 +6,9 @@ php:
 install:
   - composer install
 
+before_script:
+  - echo ${TRAVIS_BRANCH} $TRAVIS_BRANCH ${TRAVIS_TAG} $TRAVIS_TAG
+
 script:
   - php tests/test.php
 
@@ -16,12 +19,12 @@ before_deploy:
   - cp vendor dist/ -R
   - cp LICENSE dist/
   - cp README.md dist/
-  - zip php-enphp-decoder-$TRAVIS_BRANCH.zip -r dist
+  - zip php-enphp-decoder-${TRAVIS_TAG}.zip -r dist
 
 deploy:
   provider: releases
   api_key: $GITHUB_TOKEN
-  file: "php-enphp-decoder-$TRAVIS_TAG.zip"
+  file: "php-enphp-decoder-${TRAVIS_TAG}.zip"
   skip_cleanup: true
   on:
     tags: true
