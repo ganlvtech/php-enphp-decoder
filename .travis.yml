@@ -6,9 +6,6 @@ php:
 install:
   - composer install
 
-before_script:
-  - echo ${TRAVIS_BRANCH} $TRAVIS_BRANCH ${TRAVIS_TAG} $TRAVIS_TAG
-
 script:
   - php tests/test.php
 
