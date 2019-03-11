@@ -1,15 +1,34 @@
 # EnPHP Decoder
 
-## Installation & Usage
+## Installation
+
+### Get It By Git Clone
+
+You can get the code by git clone. And then install the dependencies by yourserlf with [Composer](http://getcomposer.org/).
 
 ```bash
 git clone https://github.com/ganlvtech/php-enphp-decoder.git
 cd php-enphp-decoder
 composer install
-php bin/decode.php tests/assets/admin.php output.php
 ```
 
+### Download From GitHub Release
+
+You can also download it from [GitHub Release](https://github.com/ganlvtech/php-enphp-decoder/releases).
+
+Download the `zip` file and unzip them into a folder. All dependencies have been installed.
+
+## Usage
+
+```bash
+php bin/decode.php input.php output.php
+```
+
+Call `bin/decode.php` decode `input.php` and save it to `output.php`.
+
 ## License
+
+GNU GENERAL PUBLIC LICENSE Version 3
 
     EnPHP Decoder
     Copyright (C) 2019  Ganlv
