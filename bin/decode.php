@@ -20,6 +20,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+error_reporting(E_ALL);
+
 require __DIR__ . '/../vendor/autoload.php';
 
 $code = file_get_contents($argv[1]);
