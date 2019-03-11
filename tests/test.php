@@ -5,7 +5,19 @@ require __DIR__ . '/../vendor/autoload.php';
 error_reporting(E_ALL);
 
 $code = file_get_contents(__DIR__ . '/assets/admin.php');
-$code = \Ganlv\EnphpDecoder\AutoDecoder::decode($code);
+try {
+    $code = \Ganlv\EnphpDecoder\AutoDecoder::decode($code);
+    echo $code;
+} catch (Exception $e) {
+    echo $e->getTraceAsString();
+    exit(1);
+}
 
 $code = file_get_contents(__DIR__ . '/assets/index.php');
-$code = \Ganlv\EnphpDecoder\AutoDecoder::decode($code);
+try {
+    $code = \Ganlv\EnphpDecoder\AutoDecoder::decode($code);
+    echo $code;
+} catch (Exception $e) {
+    echo $e->getTraceAsString();
+    exit(2);
+}
