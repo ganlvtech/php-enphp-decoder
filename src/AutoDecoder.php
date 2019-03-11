@@ -153,11 +153,7 @@ class AutoDecoder
 
     public static function decode($code)
     {
-        try {
-            $ast = self::parseFile($code);
-        } catch (Error $error) {
-            return '';
-        }
+        $ast = self::parseFile($code);
         $decoder = new self($ast);
         $decoder->findAndRemoveGlobalVariableName();
         $decoder->removeDefineGlobalVariableName();
