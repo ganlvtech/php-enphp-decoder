@@ -1,0 +1,22 @@
+language: php
+php:
+  - '7.3'
+install:
+  - composer install
+script:
+  - php tests/test.php
+after_script:
+  - mkdir dist/
+  - cp bin dist/ -R
+  - cp src dist/ -R
+  - cp vendor dist/ -R
+  - cp LICENSE dist/
+  - cp README.md dist/
+  - zip php-enphp-decoder-$TRAVIS_TAG.zip -r dist
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  file: php-enphp-decoder-$TRAVIS_TAG.zip
+  skip_cleanup: true
+  on:
+    tags: true
