@@ -6,6 +6,8 @@
 
 EnPHP has bugs. The obfuscated files cannot even run properly on php 7. You shouldn't ask a decoder to recover a broken file to a normal file.
 
+See [PHP 5.x to 7.x: Changes to the handling of indirect variables, properties, and methods](http://php.net/manual/en/migration70.incompatible.php#migration70.incompatible.variable-handling.indirect).
+
 Here are some known EnPHP bugs running on php 7. They **WON'T** be fixed.
 
 ## Class Static Call
