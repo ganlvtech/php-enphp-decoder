@@ -21,3 +21,12 @@ try {
     echo $e->getTraceAsString();
     exit(2);
 }
+
+$code = file_get_contents(__DIR__ . '/assets/Setting.php');
+try {
+    $code = \Ganlv\EnphpDecoder\AutoDecoder::decode($code);
+    echo $code, PHP_EOL;
+} catch (Exception $e) {
+    echo $e->getTraceAsString();
+    exit(3);
+}
