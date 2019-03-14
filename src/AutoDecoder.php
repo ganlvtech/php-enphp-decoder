@@ -53,7 +53,7 @@ class AutoDecoder
 
     public static function parseFile($code)
     {
-        $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
+        $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP5);
         $ast = $parser->parse($code);
         return $ast;
     }
