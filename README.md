@@ -64,7 +64,39 @@ class Bar extends Foo
 }
 ```
 
-This means `(parent::$GLOBALS)[GLOBAL_VAR_KEY][0x0]();` instead of what we expected `parent::($GLOBALS[GLOBAL_VAR_KEY][0x0])();`.
+This means `(parent::$GLOBALS)[GLOBAL_VAR_KEY][0x0]();` instead of what we expected `parent::{$GLOBALS[GLOBAL_VAR_KEY][0x0]}();`.
+
+### Class Method Call
+
+```php
+class Foo
+{
+    public function bar()
+    {
+        echo 'bar';
+    }
+
+    public function __construct()
+    {
+        $this->bar();
+    }
+}
+```
+
+The constructor will be encoded like this
+
+```php
+class Foo
+{
+    public function __construct()
+    {
+        $v0 = &$GLOBALS[GLOBAL_VAR_KEY];
+        $this->$v0[0x0]();
+    }
+}
+```
+
+This means `($this->$v0)[0x0]()` instead of what we expected `$this->{$v0[0x0]}()`.
 
 ## License
 
