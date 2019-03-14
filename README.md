@@ -26,6 +26,46 @@ php bin/decode.php input.php output.php
 
 Call `bin/decode.php` decode `input.php` and save it to `output.php`.
 
+## About EnPHP Bugs
+
+EnPHP has bugs. The obfuscated files cannot even run properly. You shouldn't ask a decoder to revert a broken file to a normal file.
+
+Here are some known EnPHP bugs. They **WON'T** be fixed.
+
+### Class Static Call
+
+```php
+class Foo
+{
+    public static function baz()
+    {
+        echo 'baz';
+    }
+}
+
+class Bar extends Foo
+{
+    public function __construct()
+    {
+        parent::baz();
+    }
+}
+```
+
+class Bar will be obfuscated like this
+
+```php
+class Bar extends Foo
+{
+    public function __construct()
+    {
+        parent::$GLOBALS[GLOBAL_VAR_KEY][0x0]();
+    }
+}
+```
+
+This means `(parent::$GLOBALS)[GLOBAL_VAR_KEY][0x0]();` instead of what we expected `parent::($GLOBALS[GLOBAL_VAR_KEY][0x0])();`.
+
 ## License
 
 GNU GENERAL PUBLIC LICENSE Version 3
