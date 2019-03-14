@@ -120,7 +120,7 @@ class AutoDecoder
         return $this->ast;
     }
 
-    public function renameFunctionLocalLikeVariable()
+    public function renameFunctionLikeLocalVariable()
     {
         $nodeVisitor = new FunctionLikeNodeVisitor(function ($node) {
             /** @var $node \PhpParser\Node\Stmt\Function_ */
@@ -160,7 +160,7 @@ class AutoDecoder
         $decoder->removeUnusedConstFetchNodeVisitor();
         $decoder->replaceGlobalString();
         $decoder->replaceFunctionLikeGlobalString();
-        $decoder->renameFunctionLocalLikeVariable();
+        $decoder->renameFunctionLikeLocalVariable();
         $decoder->beautify();
         return $decoder->prettyPrintFile();
     }
