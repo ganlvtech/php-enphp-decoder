@@ -30,7 +30,7 @@ Call `bin/decode.php` decode `input.php` and save it to `output.php`.
 
 **EnPHP is for php 5. There may be some problem is you use the obfuscated files on php 7.**
 
-See <docs/enphp_bugs.md>.
+See [docs/enphp_bugs.md](docs/enphp_bugs.md).
 
 ## License
 
