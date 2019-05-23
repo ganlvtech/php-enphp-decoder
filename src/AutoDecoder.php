@@ -30,9 +30,9 @@ use Ganlv\EnphpDecoder\NodeVisitors\FunctionLocalVariableRenameNodeVisitor;
 use Ganlv\EnphpDecoder\NodeVisitors\GlobalStringNodeVisitor;
 use Ganlv\EnphpDecoder\NodeVisitors\RemoveDefineGlobalVariableNameNodeVisitor;
 use Ganlv\EnphpDecoder\NodeVisitors\RemoveUnusedConstFetchNodeVisitor;
+use Ganlv\EnphpDecoder\PrettyPrinter\StandardPrettyPrinter;
 use PhpParser\NodeTraverser;
 use PhpParser\ParserFactory;
-use PhpParser\PrettyPrinter\Standard;
 
 class AutoDecoder
 {
@@ -51,13 +51,6 @@ class AutoDecoder
     public function __construct($ast)
     {
         $this->ast = $ast;
-    }
-
-    public static function parseFile($code)
-    {
-        $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP5);
-        $ast = $parser->parse($code);
-        return $ast;
     }
 
     public function findAndRemoveGlobalVariableName()
@@ -165,27 +158,48 @@ class AutoDecoder
 
     public function prettyPrintFile()
     {
-        $prettyPrinter = new Standard();
-        return $prettyPrinter->prettyPrintFile($this->ast);
+        return StandardPrettyPrinter::prettyPrinter()->prettyPrintFile($this->ast);
+    }
+
+    /**
+     * @return bool is ast modified
+     */
+    public function autoDecode()
+    {
+        $modified = false;
+        for ($i = 0; $i < 10; $i++) { // avoid too many loops
+            $this->findAndRemoveGlobalVariableName();
+            if ($this->dataType === 0) {
+                break;
+            }
+            $modified = true;
+            $this->decodeStringArray();
+            $this->removeDefineGlobalVariableName();
+            $this->removeUnusedConstFetchNodeVisitor();
+            $this->replaceGlobalString();
+            $this->replaceFunctionLikeGlobalString();
+            $this->renameFunctionLikeLocalVariable();
+            $this->beautify();
+        }
+        return $modified;
+    }
+
+    public static function parseFile($code)
+    {
+        $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP5);
+        $ast = $parser->parse($code);
+        return $ast;
     }
 
     public static function decode($code)
     {
         $ast = self::parseFile($code);
         $decoder = new self($ast);
-        for ($i = 0; $i < 10; $i++) { // avoid too many loops
-            $decoder->findAndRemoveGlobalVariableName();
-            if ($decoder->dataType === 0) {
-                break;
-            }
-            $decoder->decodeStringArray();
-            $decoder->removeDefineGlobalVariableName();
-            $decoder->removeUnusedConstFetchNodeVisitor();
-            $decoder->replaceGlobalString();
-            $decoder->replaceFunctionLikeGlobalString();
-            $decoder->renameFunctionLikeLocalVariable();
-            $decoder->beautify();
+        $modified = $decoder->autoDecode();
+        if ($modified) {
+            return $decoder->prettyPrintFile();
+        } else {
+            return $code;
         }
-        return $decoder->prettyPrintFile();
     }
 }
