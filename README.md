@@ -40,7 +40,7 @@ Call `bin/decodeRecursive.php` decode all php files in `dir/` recursively and sa
 
 ## About EnPHP Bugs
 
-See <docs/enphp_bugs.md>.
+See [docs/enphp_bugs.md](docs/enphp_bugs.md).
 
 ## License
 
