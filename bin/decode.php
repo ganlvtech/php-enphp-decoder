@@ -27,4 +27,6 @@ require __DIR__ . '/../vendor/autoload.php';
 $code = file_get_contents($argv[1]);
 $decoded = \Ganlv\EnphpDecoder\AutoDecoder::decode($code);
 echo $decoded;
-file_put_contents($argv[2], $decoded);
+if ($argc > 2) {
+    file_put_contents($argv[2], $decoded);
+}
