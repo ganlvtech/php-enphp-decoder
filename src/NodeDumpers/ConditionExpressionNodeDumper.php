@@ -15,6 +15,7 @@ use PhpParser\Node\Stmt\UseUse;
  * Usage:
  *
  *     echo (new ConditionExpressionNodeDumper)->dump($ast);
+ *     echo (new ConditionExpressionNodeDumper)->dump($node, '$node');
  *
  * @package Ganlv\EnphpDecoder\NodeDumpers
  */
