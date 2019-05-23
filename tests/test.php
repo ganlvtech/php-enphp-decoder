@@ -1,32 +1,21 @@
 <?php
 
-require __DIR__ . '/../vendor/autoload.php';
-
 error_reporting(E_ALL);
 
-$code = file_get_contents(__DIR__ . '/assets/admin.php');
-try {
-    $code = \Ganlv\EnphpDecoder\AutoDecoder::decode($code);
-    echo $code, PHP_EOL;
-} catch (Exception $e) {
-    echo $e->getTraceAsString();
-    exit(1);
-}
+require __DIR__ . '/../vendor/autoload.php';
 
-$code = file_get_contents(__DIR__ . '/assets/index.php');
-try {
-    $code = \Ganlv\EnphpDecoder\AutoDecoder::decode($code);
-    echo $code, PHP_EOL;
-} catch (Exception $e) {
-    echo $e->getTraceAsString();
-    exit(2);
-}
+define('SAMPLE_DIR', __DIR__ . '/samples');
+$filenames = scandir(SAMPLE_DIR);
+$filenames = array_values(array_diff($filenames, ['.', '..']));
 
-$code = file_get_contents(__DIR__ . '/assets/Setting.php');
-try {
-    $code = \Ganlv\EnphpDecoder\AutoDecoder::decode($code);
-    echo $code, PHP_EOL;
-} catch (Exception $e) {
-    echo $e->getTraceAsString();
-    exit(3);
+foreach ($filenames as $key => $filename) {
+    echo $filename, PHP_EOL;
+    $code = file_get_contents(SAMPLE_DIR . '/' . $filename);
+    try {
+        $code = \Ganlv\EnphpDecoder\AutoDecoder::decode($code);
+        echo $code, PHP_EOL;
+    } catch (Exception $e) {
+        echo $e->getTraceAsString();
+        exit(1);
+    }
 }
