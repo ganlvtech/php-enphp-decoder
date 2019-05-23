@@ -31,8 +31,7 @@ class RemoveDefineGlobalVariableNameNodeVisitor extends NodeVisitorAbstract
             && $node->expr->args[1] instanceof \PhpParser\Node\Arg
             && $node->expr->args[1]->value instanceof \PhpParser\Node\Scalar\String_
             && $node->expr->args[1]->byRef === false
-            && $node->expr->args[1]->unpack === false
-        ) {
+            && $node->expr->args[1]->unpack === false) {
             return NodeTraverser::REMOVE_NODE;
         }
     }

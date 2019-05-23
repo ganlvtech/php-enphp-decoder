@@ -13,8 +13,7 @@ class RemoveUnusedConstFetchNodeVisitor extends NodeVisitorAbstract
         if ($node instanceof Node\Stmt\Expression
             && $node->expr instanceof Node\Expr\ConstFetch
             && $node->expr->name instanceof Node\Name
-            && count($node->expr->name->parts) === 1
-        ) {
+            && count($node->expr->name->parts) === 1) {
             return NodeTraverser::REMOVE_NODE;
         }
         return null;

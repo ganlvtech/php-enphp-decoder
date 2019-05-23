@@ -2,19 +2,20 @@
 
 namespace Ganlv\EnphpDecoder\NodeVisitors;
 
+use Ganlv\EnphpDecoder\PrettyPrinter\StandardPrettyPrinter;
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
 
 class GlobalStringNodeVisitor extends NodeVisitorAbstract
 {
     public $globalVarName;
-    public $globalVarKey;
+    public $globalVarKeyExpr;
     public $stringArray;
 
-    public function __construct($globalVarName, $globalVarKey, $stringArray)
+    public function __construct($globalVarName, $globalVarKeyExpr, $stringArray)
     {
         $this->globalVarName = $globalVarName;
-        $this->globalVarKey = $globalVarKey;
+        $this->globalVarKeyExpr = $globalVarKeyExpr;
         $this->stringArray = $stringArray;
     }
 
@@ -24,11 +25,9 @@ class GlobalStringNodeVisitor extends NodeVisitorAbstract
             && $node->var instanceof Node\Expr\ArrayDimFetch
             && $node->var->var instanceof Node\Expr\Variable
             && $node->var->var->name === $this->globalVarName
-            && $node->var->dim instanceof Node\Expr\ConstFetch
-            && $node->var->dim->name instanceof Node\Name
-            && $node->var->dim->name->parts[0] === $this->globalVarKey
-            && $node->dim instanceof Node\Scalar\LNumber
-        ) {
+            && $node->var->dim !== null
+            && StandardPrettyPrinter::prettyPrinter()->prettyPrintExpr($node->var->dim) === $this->globalVarKeyExpr
+            && $node->dim instanceof Node\Scalar\LNumber) {
             return new Node\Scalar\String_($this->stringArray[$node->dim->value]);
         }
         return null;

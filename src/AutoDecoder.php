@@ -30,7 +30,6 @@ use Ganlv\EnphpDecoder\NodeVisitors\FunctionLocalVariableRenameNodeVisitor;
 use Ganlv\EnphpDecoder\NodeVisitors\GlobalStringNodeVisitor;
 use Ganlv\EnphpDecoder\NodeVisitors\RemoveDefineGlobalVariableNameNodeVisitor;
 use Ganlv\EnphpDecoder\NodeVisitors\RemoveUnusedConstFetchNodeVisitor;
-use PhpParser\Error;
 use PhpParser\NodeTraverser;
 use PhpParser\ParserFactory;
 use PhpParser\PrettyPrinter\Standard;
@@ -40,11 +39,14 @@ class AutoDecoder
     protected $ast;
     protected $globalVarName;
     protected $globalVarKey;
+    protected $globalVarKeyExpr;
     protected $delimiter;
     protected $data;
     protected $start;
     protected $length;
     protected $stringArray;
+    protected $dataType;
+    protected $globalVarKeyType;
 
     public function __construct($ast)
     {
@@ -66,11 +68,28 @@ class AutoDecoder
         $this->ast = $traverser->traverse($this->ast);
         $this->globalVarName = $nodeVisitor->globalVarName;
         $this->globalVarKey = $nodeVisitor->globalVarKey;
+        $this->globalVarKeyExpr = $nodeVisitor->globalVarKeyExpr;
         $this->delimiter = $nodeVisitor->delimiter;
         $this->data = $nodeVisitor->data;
         $this->start = $nodeVisitor->start;
         $this->length = $nodeVisitor->length;
+        $this->dataType = $nodeVisitor->dataType;
+        $this->globalVarKeyType = $nodeVisitor->globalVarKeyType;
         return $this->ast;
+    }
+
+    public function decodeStringArray()
+    {
+        switch ($this->dataType) {
+            case 0:
+                break;
+            case FindAndRemoveGlobalVariableNameNodeVisitor::DATA_TYPE_EXPLODE_GZINFLATE_SUBSTR:
+                $this->stringArray = explode($this->delimiter, gzinflate(substr($this->data, $this->start, $this->length)));
+                break;
+            case FindAndRemoveGlobalVariableNameNodeVisitor::DATA_TYPE_EXPLODE:
+                $this->stringArray = explode($this->delimiter, $this->data);
+                break;
+        }
     }
 
     public function removeDefineGlobalVariableName()
@@ -79,7 +98,6 @@ class AutoDecoder
         $traverser = new NodeTraverser();
         $traverser->addVisitor($nodeVisitor);
         $this->ast = $traverser->traverse($this->ast);
-        $this->stringArray = explode($this->delimiter, gzinflate(substr($this->data, $this->start, $this->length)));
         return $this->ast;
     }
 
@@ -94,7 +112,7 @@ class AutoDecoder
 
     public function replaceGlobalString()
     {
-        $nodeVisitor = new GlobalStringNodeVisitor($this->globalVarName, $this->globalVarKey, $this->stringArray);
+        $nodeVisitor = new GlobalStringNodeVisitor($this->globalVarName, $this->globalVarKeyExpr, $this->stringArray);
         $traverser = new NodeTraverser();
         $traverser->addVisitor($nodeVisitor);
         $this->ast = $traverser->traverse($this->ast);
@@ -104,11 +122,11 @@ class AutoDecoder
     public function replaceFunctionLikeGlobalString()
     {
         $globalVarName = $this->globalVarName;
-        $globalVarKey = $this->globalVarKey;
+        $globalVarKeyExpr = $this->globalVarKeyExpr;
         $stringArray = $this->stringArray;
-        $nodeVisitor = new FunctionLikeNodeVisitor(function ($node) use ($globalVarName, $globalVarKey, $stringArray) {
+        $nodeVisitor = new FunctionLikeNodeVisitor(function ($node) use ($globalVarName, $globalVarKeyExpr, $stringArray) {
             /** @var $node \PhpParser\Node\Stmt\Function_ */
-            $nodeVisitor = new FunctionGlobalStringNodeVisitor($globalVarName, $globalVarKey, $stringArray);
+            $nodeVisitor = new FunctionGlobalStringNodeVisitor($globalVarName, $globalVarKeyExpr, $stringArray);
             $traverser = new NodeTraverser();
             $traverser->addVisitor($nodeVisitor);
             $node->stmts = $traverser->traverse($node->stmts);
@@ -155,13 +173,19 @@ class AutoDecoder
     {
         $ast = self::parseFile($code);
         $decoder = new self($ast);
-        $decoder->findAndRemoveGlobalVariableName();
-        $decoder->removeDefineGlobalVariableName();
-        $decoder->removeUnusedConstFetchNodeVisitor();
-        $decoder->replaceGlobalString();
-        $decoder->replaceFunctionLikeGlobalString();
-        $decoder->renameFunctionLikeLocalVariable();
-        $decoder->beautify();
+        for ($i = 0; $i < 10; $i++) { // avoid too many loops
+            $decoder->findAndRemoveGlobalVariableName();
+            if ($decoder->dataType === 0) {
+                break;
+            }
+            $decoder->decodeStringArray();
+            $decoder->removeDefineGlobalVariableName();
+            $decoder->removeUnusedConstFetchNodeVisitor();
+            $decoder->replaceGlobalString();
+            $decoder->replaceFunctionLikeGlobalString();
+            $decoder->renameFunctionLikeLocalVariable();
+            $decoder->beautify();
+        }
         return $decoder->prettyPrintFile();
     }
 }

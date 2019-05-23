@@ -2,6 +2,7 @@
 
 namespace Ganlv\EnphpDecoder\NodeVisitors;
 
+use Ganlv\EnphpDecoder\PrettyPrinter\StandardPrettyPrinter;
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
@@ -10,13 +11,13 @@ class FunctionGlobalStringNodeVisitor extends NodeVisitorAbstract
 {
     public $localVarName;
     public $globalVarName;
-    public $globalVarKey;
+    public $globalVarKeyExpr;
     public $stringArray;
 
-    public function __construct($globalVarName, $globalVarKey, $stringArray)
+    public function __construct($globalVarName, $globalVarKeyExpr, $stringArray)
     {
         $this->globalVarName = $globalVarName;
-        $this->globalVarKey = $globalVarKey;
+        $this->globalVarKeyExpr = $globalVarKeyExpr;
         $this->stringArray = $stringArray;
     }
 
@@ -28,17 +29,14 @@ class FunctionGlobalStringNodeVisitor extends NodeVisitorAbstract
             && $node->expr->expr instanceof Node\Expr\ArrayDimFetch
             && $node->expr->expr->var instanceof Node\Expr\Variable
             && $node->expr->expr->var->name === $this->globalVarName
-            && $node->expr->expr->dim instanceof Node\Expr\ConstFetch
-            && $node->expr->expr->dim->name instanceof Node\Name
-            && $node->expr->expr->dim->name->parts[0] === $this->globalVarKey
-        ) {
+            && $node->expr->expr->dim !== null
+            && StandardPrettyPrinter::prettyPrinter()->prettyPrintExpr($node->expr->expr->dim) === $this->globalVarKeyExpr) {
             $this->localVarName = $node->expr->var->name;
             return NodeTraverser::REMOVE_NODE;
         } elseif ($node instanceof Node\Expr\ArrayDimFetch
             && $node->var instanceof Node\Expr\Variable
             && $node->var->name === $this->localVarName
-            && $node->dim instanceof Node\Scalar\LNumber
-        ) {
+            && $node->dim instanceof Node\Scalar\LNumber) {
             return new Node\Scalar\String_($this->stringArray[$node->dim->value]);
         }
         return null;
