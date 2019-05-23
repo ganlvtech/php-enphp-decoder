@@ -17,6 +17,8 @@ class BeautifyNodeVisitor extends NodeVisitorAbstract
         } elseif ($node instanceof Node\Expr\New_
             && $node->class instanceof Node\Scalar\String_) {
             $node->class = new Node\Name($node->class->value);
+        } elseif ($node instanceof Node\Scalar\LNumber) {
+            $node->setAttribute('kind', Node\Scalar\LNumber::KIND_DEC);
         }
     }
 }
