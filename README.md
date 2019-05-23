@@ -20,15 +20,25 @@ Download the `zip` file and unzip them into a folder. All dependencies have been
 
 ## Usage
 
+### Decode One File
+
 ```bash
 php bin/decode.php input.php output.php
 ```
 
 Call `bin/decode.php` decode `input.php` and save it to `output.php`.
 
-## About EnPHP Bugs
+### Decode All Files in A Directory
 
-**EnPHP is for php 5. There may be some problem is you use the obfuscated files on php 7.**
+```bash
+php bin/decodeRecursive.php dir/
+```
+
+Call `bin/decodeRecursive.php` decode all php files in `dir/` recursively and save it to its original path.
+
+**CAUTION: This will OVERWRITE all php files! If any error happened with the decoder, your files MAY NOT BE RECOVERED! Please backup your files!**
+
+## About EnPHP Bugs
 
 See <docs/enphp_bugs.md>.
 

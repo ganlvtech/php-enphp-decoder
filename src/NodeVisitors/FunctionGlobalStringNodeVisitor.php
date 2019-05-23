@@ -2,6 +2,7 @@
 
 namespace Ganlv\EnphpDecoder\NodeVisitors;
 
+use Ganlv\EnphpDecoder\KnownEnphpBugs\ExplodeDelimiterWithApostropheException;
 use Ganlv\EnphpDecoder\PrettyPrinter\StandardPrettyPrinter;
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
@@ -37,6 +38,7 @@ class FunctionGlobalStringNodeVisitor extends NodeVisitorAbstract
             && $node->var instanceof Node\Expr\Variable
             && $node->var->name === $this->localVarName
             && $node->dim instanceof Node\Scalar\LNumber) {
+            ExplodeDelimiterWithApostropheException::test($this->stringArray, $node->dim->value);
             return new Node\Scalar\String_($this->stringArray[$node->dim->value]);
         }
         return null;
