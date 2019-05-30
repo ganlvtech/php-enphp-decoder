@@ -1,5 +1,7 @@
 # EnPHP Decoder
 
+[![Build Status](https://travis-ci.com/ganlvtech/php-enphp-decoder.svg?branch=master)](https://travis-ci.com/ganlvtech/php-enphp-decoder)
+
 [EnPHP](https://github.com/djunny/enphp) Decoder written in PHP. Powered by [PHP-Parser](https://github.com/nikic/PHP-Parser).
 
 ## Installation
