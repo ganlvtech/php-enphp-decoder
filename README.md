@@ -24,6 +24,15 @@ Download the `zip` file and unzip them into a folder. All dependencies have been
 
 ## Usage
 
+### Decode by Web UI
+
+```bash
+cd public/
+php -S 127.0.0.1:8000
+```
+
+Visit <https://127.0.0.1:8000/> on Browser. You can select a file to upload, and you will download a decoded file.
+
 ### Decode One File
 
 ```bash
@@ -39,6 +48,8 @@ php bin/decodeRecursive.php dir/
 ```
 
 Call `bin/decodeRecursive.php` decode all php files in `dir/` recursively and save it to its original path.
+
+You can use absolute path like `/path/to/your/dir/`.
 
 **CAUTION: This will OVERWRITE all php files! If any error happened with the decoder, your files MAY NOT BE RECOVERED! Please backup your files!**
 
