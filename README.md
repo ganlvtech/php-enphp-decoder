@@ -37,6 +37,31 @@ php -S 127.0.0.1:8000
 
 Visit <https://127.0.0.1:8000/> on Browser. You can select a file to upload, and you will download a decoded file.
 
+#### Deploy to Web Server
+
+Serve by `Nginx` and `php-fpm`.
+
+```nginx
+server {
+	listen 80;
+	# listen 443 ssl;
+	root /home/ubuntu/php-enphp-decoder/public;
+	index index.php index.html index.htm;
+	server_name enphp.ganlvtech.cn;
+
+	location / {
+		try_files $uri $uri/ =404;
+	}
+
+	location ~ \.php$ {
+		fastcgi_pass unix:/run/php/php7.0-fpm.sock;
+		include snippets/fastcgi-php.conf;
+	}
+}
+```
+
+You may need to change port, root, server_name and php version.
+
 ### Decode One File
 
 ```bash
