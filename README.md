@@ -1,7 +1,5 @@
 # EnPHP Decoder
 
-[![Build Status](https://travis-ci.com/ganlvtech/php-enphp-decoder.svg?branch=master)](https://travis-ci.com/ganlvtech/php-enphp-decoder)
-
 [EnPHP](https://github.com/djunny/enphp) Decoder written in PHP. Powered by [PHP-Parser](https://github.com/nikic/PHP-Parser).
 
 ## Try it online
@@ -39,6 +37,8 @@ Visit <https://127.0.0.1:8000/> on Browser. You can select a file to upload, and
 
 #### Deploy to Web Server
 
+**Be careful for [PHP2Shell](https://en.wikipedia.org/wiki/PHP2Shell) CVE**
+
 Serve by `Nginx` and `php-fpm`.
 
 ```nginx
@@ -57,6 +57,19 @@ server {
 		fastcgi_pass unix:/run/php/php7.0-fpm.sock;
 		include snippets/fastcgi-php.conf;
 	}
+}
+```
+
+Serve by Caddy Server and php-fpm.
+
+```caddy
+enphp.ganlv.tech {
+	log
+	root /home/ubuntu/php-enphp-decoder/public
+	php_fastcgi 127.0.0.1:9000 {
+		capture_stderr
+	}
+	file_server
 }
 ```
 
